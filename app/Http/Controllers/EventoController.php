@@ -19,7 +19,8 @@ class EventoController extends Controller
     {
         $evento = Evento::findOrFail($id);
 
-        $perguntas = Pergunta::where('evento_id', $evento->id)
+        $perguntas = Pergunta::with('user')
+            ->where('evento_id', $evento->id)
             ->latest()
             ->paginate(10);
 
@@ -32,6 +33,7 @@ class EventoController extends Controller
 
         Pergunta::create([
             'evento_id' => $evento->id,
+            'user_id'   => auth()->id(),
             'texto'     => $request->input('texto'),
             'status'    => 'pendente',
         ]);
