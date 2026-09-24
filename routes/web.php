@@ -24,7 +24,7 @@ Route::post('/eventos', [EventoController::class, 'store'])->name('eventos.store
 
 Route::get('/', [EventoController::class, 'index'])->name('eventos.index');
 Route::get('/eventos/{id}', [EventoController::class, 'show'])->name('eventos.show');
-Route::post('/eventos/{id}/perguntas', [EventoController::class, 'storePergunta'])->name('eventos.perguntas.store');
+Route::post('/eventos/{id}/perguntas', [EventoController::class, 'storePergunta'])->middleware('auth')->name('eventos.perguntas.store');
 
 
 require __DIR__.'/auth.php';
