@@ -4,10 +4,9 @@
 
 @section('content')
 <div class="row">
-    <!-- Formularço de envio de Pergunta -->
     <div class="col-md-5 mb-4">
         <div class="card shadow-sm p-3">
-            <h4 class="fw-bold mb-3">💬 Faça sua Pergunta</h4>
+            <h4 class="fw-bold mb-3"> Faça sua Pergunta</h4>
             <form action="{{ route('eventos.perguntas.store', $evento->id) }}" method="POST">
                 @csrf
                 <div class="mb-3">
@@ -26,10 +25,9 @@
         </div>
     </div>
 
-    <!-- Lista de Perguntas (TICKET #002) -->
     <div class="col-md-7">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="fw-bold m-0">📋 Perguntas do Evento</h4>
+            <h4 class="fw-bold m-0"> Perguntas do Evento</h4>
             <span class="text-secondary small">Total no Banco: {{ $evento->perguntas->count() }}</span>
         </div>
 
@@ -49,7 +47,6 @@
             </div>
         @endforelse
 
-        <!-- TICKET #002: Renderização dos Botões de Paginação -->
         @if(method_exists($perguntas, 'links'))
             <div class="d-flex justify-content-center mt-4">
                 
