@@ -14,16 +14,14 @@
                     <label for="texto" class="form-label text-secondary">Texto da Pergunta</label>
 
                     <textarea name="texto" id="texto" rows="4" 
-                              class="form-control bg-dark text-white border-secondary @error('texto') is-invalid @enderror"
-                              placeholder="Digite sua dúvida ou comentário para o palestrante..."></textarea>
+                              class="form-control bg-dark text-white @error('texto') border-red-500 @enderror"
+                              placeholder="Digite sua dúvida ou comentário para o palestrante...">{{ old('texto') }}</textarea>
 
                     @error('texto')
-                        <div class="invalid-feedback fw-bold">
-                            {{ $message }}
-                        </div>
+                        <p class="text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Enviar Pergunta</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Enviar Pergunta</button>
             </form>
         </div>
     </div>
@@ -36,7 +34,7 @@
         </div>
 
         @forelse($perguntas as $pergunta)
-            <div class="card mb-3 shadow-sm border-start border-4 border-primary">
+            <div class="card mb-4 p-4 rounded-2xl shadow-sm border-start border-4 border-primary">
                 <div class="card-body">
                     <p class="fs-5 mb-2 text-white">{{ $pergunta->texto }}</p>
                     <div class="d-flex justify-content-between align-items-center text-secondary small">
