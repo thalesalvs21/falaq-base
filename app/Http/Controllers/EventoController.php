@@ -60,4 +60,11 @@ class EventoController extends Controller
         $evento->delete();
         return redirect()->route('eventos.index');
     }
+
+    public function destroyPergunta(Pergunta $pergunta)
+    {
+        $this->authorize('delete', $pergunta);
+        $pergunta->delete();
+        return redirect()->route('eventos.show', $pergunta->evento_id);
+    }
 }
