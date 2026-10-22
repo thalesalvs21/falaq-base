@@ -44,25 +44,63 @@
     <!-- Lista de Perguntas (TICKET #002) -->
     <div class="col-md-7">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="fw-bold m-0">📋 Perguntas do Evento</h4>
+            <h4 class="fw-bold m-0">📋 Perguntas do Evento <span class="badge bg-primary fs-6">🏆 Mais votadas no topo</span></h4>
             <span class="text-secondary small">Total no Banco: {{ $evento->perguntas->count() }}</span>
         </div>
 
         @forelse($perguntas as $pergunta)
+            @php($jaVotou = ($pergunta->votos_do_usuario_count ?? 0) > 0)
             <div class="card mb-3 shadow-sm border-start border-4 border-primary">
                 <div class="card-body">
-                    <p class="fs-5 mb-2 text-white">{{ $pergunta->texto }}</p>
-                    <div class="d-flex justify-content-between align-items-center text-secondary small">
-                        <span>Status: <span class="badge bg-success">{{ $pergunta->status }}</span></span>
-                        <span>{{ $pergunta->created_at->format('d/m/Y H:i') }}</span>
+                    <div class="d-flex gap-3">
+                        <!-- TICKET #012: botao de upvote e contador de votos -->
+                        <div class="text-center" style="min-width: 76px;">
+                            @auth
+                                <form action="{{ route('perguntas.votar', $pergunta) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                            class="btn btn-sm w-100 fw-bold {{ $jaVotou ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                            title="{{ $jaVotou ? 'Clique para remover seu voto' : 'Clique para votar nesta pergunta' }}">
+                                        ▲
+                                        <span class="d-block fs-5">{{ $pergunta->votos_count }}</span>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login.create') }}"
+                                   class="btn btn-sm btn-outline-secondary w-100 fw-bold"
+                                   title="Entre para votar nesta pergunta">
+                                    ▲
+                                    <span class="d-block fs-5">{{ $pergunta->votos_count }}</span>
+                                </a>
+                            @endauth
+                            <span class="text-secondary" style="font-size: .7rem;">
+                                {{ $pergunta->votos_count == 1 ? 'voto' : 'votos' }}
+                            </span>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <p class="fs-5 mb-2 text-white">{{ $pergunta->texto }}</p>
+                            <div class="d-flex justify-content-between align-items-center text-secondary small">
+                                <span>
+                                    👤 <strong>{{ $pergunta->user->name ?? 'Anônimo' }}</strong>
+                                    &nbsp;·&nbsp;
+                                    Status: <span class="badge bg-success">{{ $pergunta->status }}</span>
+                                    @if($jaVotou)
+                                        &nbsp;·&nbsp;
+                                        <span class="badge bg-primary">Você votou</span>
+                                    @endif
+                                </span>
+                                <span>{{ $pergunta->created_at->format('d/m/Y H:i') }}</span>
+                            </div>
+                            @can('delete', $pergunta)
+                                <form action="{{ route('perguntas.destroy', $pergunta) }}" method="post" class="mt-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-danger-button>Excluir Pergunta</x-danger-button>
+                                </form>
+                            @endcan
+                        </div>
                     </div>
-                    @can('delete', $pergunta)
-                        <form action="{{ route('perguntas.destroy', $pergunta) }}" method="post">
-                            @csrf
-                            @method('DELETE')
-                            <x-danger-button>Excluir Pergunta</x-danger-button>
-                        </form>
-                    @endcan
                 </div>
             </div>
         @empty
