@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pergunta extends Model
 {
@@ -21,6 +22,16 @@ class Pergunta extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Denuncias registradas para esta pergunta (TICKET #014).
+     *
+     * @return HasMany<Moderacao>
+     */
+    public function moderacoes(): HasMany
+    {
+        return $this->hasMany(Moderacao::class);
     }
 
     /**

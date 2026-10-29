@@ -49,6 +49,15 @@ class EventoPolicy
     }
 
     /**
+     * Determina se o usuario pode moderar as perguntas do evento.
+     * Somente o dono/organizador do evento (TICKET #016).
+     */
+    public function moderate(User $user, Evento $evento): bool
+    {
+        return $user->id === $evento->user_id;
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, Evento $evento): bool

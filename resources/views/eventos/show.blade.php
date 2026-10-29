@@ -19,6 +19,12 @@
             </form>
         @endcan
 
+        @can('moderate', $evento)
+            <a href="{{ route('moderacoes.index', $evento) }}" class="btn btn-outline-warning btn-sm mb-3">
+                🛡️ Fila de Moderação
+            </a>
+        @endcan
+
         <div class="card shadow-sm p-3">
             <h4 class="fw-bold mb-3">💬 Faça sua Pergunta</h4>
             <form action="{{ route('eventos.perguntas.store', $evento->id) }}" method="POST">
@@ -99,6 +105,29 @@
                                     <x-danger-button>Excluir Pergunta</x-danger-button>
                                 </form>
                             @endcan
+
+                            <!-- TICKET #016: denúncia da pergunta -->
+                            @auth
+                                @php($erroDenuncia = $errors->has('motivo') && (int) old('pergunta_id') === $pergunta->id)
+                                <button class="btn btn-link btn-sm text-secondary p-0 mt-2" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#denuncia-{{ $pergunta->id }}">
+                                    ⚠️ Reportar pergunta
+                                </button>
+
+                                <div class="collapse {{ $erroDenuncia ? 'show' : '' }}" id="denuncia-{{ $pergunta->id }}">
+                                    <form action="{{ route('perguntas.moderar', $pergunta) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        <input type="hidden" name="pergunta_id" value="{{ $pergunta->id }}">
+                                        <textarea name="motivo" rows="2"
+                                                  class="form-control form-control-sm bg-dark text-white border-secondary {{ $erroDenuncia ? 'is-invalid' : '' }}"
+                                                  placeholder="Por que esta pergunta deve ser moderada? (10 a 255 caracteres)">{{ $erroDenuncia ? old('motivo') : '' }}</textarea>
+                                        @if($erroDenuncia)
+                                            <div class="invalid-feedback fw-bold">{{ $errors->first('motivo') }}</div>
+                                        @endif
+                                        <button type="submit" class="btn btn-warning btn-sm fw-bold mt-2">Enviar denúncia</button>
+                                    </form>
+                                </div>
+                            @endauth
                         </div>
                     </div>
                 </div>
